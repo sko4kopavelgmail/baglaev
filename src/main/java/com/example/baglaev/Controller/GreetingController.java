@@ -42,8 +42,10 @@ public class GreetingController {
             Model model
     ){
         oldUser = userRepo.findByUserName(map.get("userName"));
-        if (oldUser == null || oldUser.getPassword().equals(map.get("password")))
-            model.addAttribute("message","Введенные данные некорректны :(");
+        if (oldUser == null || !oldUser.getPassword().equals(map.get("password"))) {
+            model.addAttribute("message", "Введенные данные некорректны :(");
+            oldUser = null;
+        }
         else return "redirect:/main";
 
         return "greeting";
@@ -108,13 +110,16 @@ public class GreetingController {
         String password = map.get("password");
 
 
-        if (userName.length() != 0){
+        if (userName!= null && userName.length() != 0){
+            model.addAttribute("time",new Date().toString());
+            model.addAttribute("user",oldUser);
             if (userName.length() < 5){
                 model.addAttribute("message","ваш логин сильно короткий");
                 return "main";
             }else {
                 if (userName.equals(oldUser.getUserName())){
                     model.addAttribute("message","вы ввели одинаковые логины");
+
                     return "main";
                 }else {
                     oldUser.setUserName(userName);
@@ -122,13 +127,17 @@ public class GreetingController {
             }
         }
 
-        if (password.length() != 0){
+        if (password!= null && password.length() != 0){
             if (password.length() < 6){
                 model.addAttribute("message","ваш пароль сильно короткий");
+                model.addAttribute("time",new Date().toString());
+                model.addAttribute("user",oldUser);
                 return "main";
             }else {
                 if (password.equals(oldUser.getPassword())){
                     model.addAttribute("message","вы ввели одинаковые пароли");
+                    model.addAttribute("time",new Date().toString());
+                    model.addAttribute("user",oldUser);
                     return "main";
                 }else {
                     oldUser.setPassword(password);
@@ -136,11 +145,11 @@ public class GreetingController {
             }
         }
 
-        if (name.length() != 0){
+        if (name != null && name.length() != 0){
             oldUser.setName(name);
         }
 
-        if (secondName.length() != 0){
+        if (secondName != null && secondName.length() != 0){
             oldUser.setSecondName(secondName);
         }
         userRepo.save(oldUser);

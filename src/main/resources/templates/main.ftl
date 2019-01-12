@@ -33,7 +33,7 @@
     <input type="file" name="file">
     <div>
             <#if user.fileName??>
-                <img src="../img/${user.fileName}">
+                <img width="200" height="200" src="../img/${user.fileName}">
             </#if>
     </div>
     <input type="submit" value="Add">
